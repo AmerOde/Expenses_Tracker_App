@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker_app/expenses.dart';
+// import 'package:flutter/services.dart';
 
-void main() {
+void main()  {
+// asynk
+ //  WidgetsFlutterBinding.ensureInitialized();
+ //
+ // await SystemChrome.setPreferredOrientations([
+ //      DeviceOrientation.portraitUp,
+ //    ]);
+
   runApp(const MyApp());
 }
 
@@ -10,6 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(MediaQuery.of(context).size.width);
+    print(MediaQuery.of(context).size.height);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
