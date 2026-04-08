@@ -1,5 +1,7 @@
 import 'dart:ffi';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:expense_tracker_app/model/Expense.dart';
 
@@ -50,12 +52,19 @@ class _NewExtendsState extends State<NewExpenses> {
     _amountController.dispose();
     super.dispose();
   }
+  void _showOkDialog(){
+    if(Platform.isIOS){
+      showCupertinoDialog(context: context, builder: (ctx) =>CupertinoAlertDialog(
+          title: Text("Invalid Entry"),
+          content: Text("Please Enter the valid title and the valid amount ! "),
+          actions: [
+          TextButton(
+          onPressed: () {
+      Navigator.pop(context);
+      },
+        child: Text("Ok"),)]));
 
-  void _SaveNewExpenses() {
-    final _amount = double.tryParse(_amountController.text.toString());
-    final isValidAmount = _amount == null;
-
-    if (_titleController.text.isEmpty || isValidAmount ||_selectedDate == null) {
+    }else{
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -71,6 +80,15 @@ class _NewExtendsState extends State<NewExpenses> {
           ],
         ),
       );
+    }
+  }
+
+  void _SaveNewExpenses() {
+    final _amount = double.tryParse(_amountController.text.toString());
+    final isValidAmount = _amount == null;
+
+    if (_titleController.text.isEmpty || isValidAmount ||_selectedDate == null) {
+        _showOkDialog();
       return;
     }
 
@@ -82,83 +100,89 @@ class _NewExtendsState extends State<NewExpenses> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16, 48, 16, 16),
+    final keyboardSpace= MediaQuery.of(context).viewInsets.bottom;
+    return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 48, 16, 16 + keyboardSpace),
 
-      child: Column(
-        children: [
-          TextField(
-            controller: _titleController,
-            maxLength: 50,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(label: Text("Title")),
-
-            //onChanged: _SaveInputText,
-          ),
-          TextField(
-            controller: _amountController,
-            maxLength: 50,
-            decoration: InputDecoration(
-              label: Text("amount"),
-              prefixText: "\$ ",
-            ),
-            keyboardType: TextInputType.number,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          child: Column(
             children: [
-              Text(
-                _selectedDate == null
-                    ? formatter.format(DateTime.now())
-                    : formatter.format(_selectedDate!),
-              ),
+              TextField(
+                controller: _titleController,
+                maxLength: 50,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(label: Text("Title")),
 
-              IconButton(
-                onPressed: _PresentDatePicker,
-                icon: Icon(Icons.calendar_month),
+                //onChanged: _SaveInputText,
               ),
-            ],
-          ),
-
-          Row(
-            children: [
-              DropdownButton(
-                padding: EdgeInsets.all(5),
-                value: _selectedCategory,
-                items: Category.values.map((category) {
-                  return DropdownMenuItem(
-                    value: category,
-                    child: Text(category.name.toUpperCase()),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
+              TextField(
+                controller: _amountController,
+                maxLength: 50,
+                decoration: InputDecoration(
+                  label: Text("amount"),
+                  prefixText: "\$ ",
+                ),
+                keyboardType: TextInputType.number,
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    _selectedDate == null
+                        ? formatter.format(DateTime.now())
+                        : formatter.format(_selectedDate!),
+                  ),
 
-              const Spacer(),
+                  IconButton(
+                    onPressed: _PresentDatePicker,
+                    icon: Icon(Icons.calendar_month),
+                  ),
+                ],
+              ),
 
               Row(
                 children: [
-                  ElevatedButton(
-                    onPressed: _SaveNewExpenses,
-                    child: Text("Save"),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
+                  DropdownButton(
+                    padding: EdgeInsets.all(5),
+                    value: _selectedCategory,
+                    items: Category.values.map((category) {
+                      return DropdownMenuItem(
+                        value: category,
+                        child: Text(category.name.toUpperCase()),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        _selectedCategory = value;
+                      });
                     },
-                    child: Text("Cancel"),
+                  ),
+
+                  const Spacer(),
+
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _SaveNewExpenses,
+                        child: Text("Save"),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel"),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

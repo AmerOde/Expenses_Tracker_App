@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
 
         cardTheme: CardThemeData(
           elevation: 0,
-          color: Colors.white,
+          color: Color(0xFF797FE1),
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -106,13 +106,12 @@ class MyApp extends StatelessWidget {
 
         cardTheme: CardThemeData(
           elevation: 0,
-          color: const Color(0xFF1E1E1E),
+          color: const Color(0xFF181818),
           margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Color(0xFF8C9EFF),
           foregroundColor: Colors.black,
